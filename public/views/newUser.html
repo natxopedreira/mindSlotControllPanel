@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--
+https://github.com/aguidrevitch/jquery-file-upload-middleware/blob/master/examples/views/form.html
+-->
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="/scripts/jSignature.min.js"></script>
+	<script src="/scripts/ohsnap.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="/styles/bootstrap.min.css" >
+	<link rel="stylesheet" href="/styles/bootstrap-theme.min.css" >
+
+<!-- Latest compiled and minified JavaScript -->
+	<script src="/scripts/bootstrap.min.js" ></script>
+	<script src="/scripts/bootstrap-filestyle.min.js"></script>
+
+	<style type="text/css">
+
+	body{
+		background-color: #c4c4c4;
+	}
+
+	.gris{
+		background-color: #dadada;
+		font-size: 1.5em;
+	}
+
+	</style>
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+
+
+		var $sigdiv = $("#signature");
+
+        $sigdiv.jSignature();
+
+        $("#limpiar_firma").click(function(){
+        	$sigdiv.jSignature("reset");
+        	$("#firma_usuario").val('');
+        });
+
+		$("#signature").bind('change', function(e){
+			$("#firma_usuario").val('');
+
+			var datapair = $sigdiv.jSignature("getData", "svgbase64");
+
+			$("#firma_usuario").val(datapair);
+		 })
+
+
+		$('#foto_usuario').filestyle({
+				buttonName : 'btn-success',
+                buttonText : 'Foto usuario'
+			});
+
+		$( "#setPreferences" ).on('submit', function( e ) {
+			console.log('select_link clicked');
+
+ 			var formData = new FormData($(this)[0]);
+
+  			// Stop form from submitting normally
+  			e.preventDefault();
+
+			$.ajax({
+			  type: "POST",
+			  async: false,
+			  url: '/createUser',
+			  data: formData,
+			  contentType: false,
+			  processData: false,
+			  cache: false,
+			  success: function(){
+			  	console.log("success");
+			  	ohSnap('Oh Snap! I cannot process your card...', {color: 'red'});
+			  }
+			});
+
+			//return false;
+
+		});
+
+
+
+
+
+	});
+
+	</script>
+	
+
+</head>
+
+   <body>
+   	<div class="container">
+
+   	<br >
+   	   	<h1>Nuevo jugador </h1>
+  	<br >
+
+
+		<form  class="form-fatter" name="setPreferences" id="setPreferences" action="/updatePreferences" method="POST" enctype="multipart/form-data">
+
+			<div id="user_data">
+
+				<div id="ohsnap"></div>
+
+			<div class="form-group">
+				<label for="nombre">nickname usuario</label>
+    			<input class="form-control input-lg gris" type="text" value="" id="nombre" name="nombre">
+			</div>
+
+			<div class="form-group">
+				<label for="tiempo">tiempo</label>
+    			<input class="form-control input-lg gris" type="text" value="" id="tiempo" name="tiempo">
+			</div>
+
+			<div class="form-group">
+				<label for="foto_usuario">foto usuario</label>
+    			<input type="file" name="foto_usuario" id="foto_usuario" />
+
+			</div>
+
+			<div class="form-group">
+				<label for="firma_usuario">firma usuario</label>
+    			<div id="signature" style="border:1px solid #000" class="gris"></div>
+
+    			<input class="form-control input-lg gris" type="hidden" value="" id="firma_usuario" name="firma_usuario">
+				
+				<a href="#" class="btn btn-danger" id="limpiar_firma">limpiar firma</a>
+
+			</div>
+  	<br >
+			<div class="row_submit">
+				<p style="font-size:0.7em">Te informamos de que ABANCA Corporación Bancaria, S.A. (“ABANCA”) incorporará a sus ficheros los datos que facilites y/o que se generen con ocasión de la presente solicitud, para su tratamiento a los fines de:
+
+i. la gestión de dicha solicitud, incluyendo, en su caso, la evaluación de la viabilidad y/o la valoración del riesgo de crédito de la operación solicitada mediante la aplicación de técnicas de scoring y análisis experto;
+
+ii. la gestión y control del contrato que, en su caso, conciertes con ABANCA, incluyendo la evaluación, valoración y seguimiento del riesgo de crédito de dicho contrato mediante la aplicación de técnicas de scoring y análisis experto;
+
+iii. el cumplimiento de las obligaciones normativas; y
+
+iv. el envío por ABANCA o por las empresas de su grupo económico, incluso por correo electrónico, mensajes SMS u otro medio de comunicación electrónica equivalente, de informaciones publicitarias o promocionales sobre los productos y servicios ofrecidos o comercializados por ABANCA o por las empresas de su grupo económico, cuyas respectivas actividades comprenden las de tipo financiero, en sus diversas modalidades, social, asegurador, inmobiliario, marketing y servicios de consultoría y asesoramiento.
+
+Con los fines antes expresados, ABANCA podrá también tratar tus datos de los que, en su caso, ya disponga en sus ficheros, así como consultar y tratar:
+
+a) tus datos económicos y financieros que, en su caso, figuren en fuentes accesibles al público;
+
+b) tus datos de solvencia que, en su caso, figuren en ficheros de información sobre solvencia patrimonial y crédito, inscritos en la Agencia Española de Protección de Datos; y
+
+c) tus datos que, en su caso, figuren registrados en la Central de Información de Riesgos del Banco de España.
+
+Salvo que se indique otra cosa, las respuestas a las cuestiones planteadas por ABANCA con motivo de esta solicitud tienen carácter necesario, por lo que la negativa a facilitar los datos requeridos impedirá tramitar dicha solicitud.
+
+Para ejercer el derecho de acceder a tus datos, rectificarlos, cancelarlos u oponerte a su tratamiento, podrás enviar un escrito a nuestro Servicio de Atención al Cliente en A Coruña, Calle San Andrés, 135-137, Planta Baja, 15003. Además, solo para oponerte a que te sean enviadas informaciones publicitarias o promocionales por correo electrónico, mensajes SMS u otros medios de comunicación electrónica equivalentes, podrás también enviar, en cualquier momento, un mensaje manifestando dicha oposición a la dirección bajas@abanca.com.</p>
+
+				<button class="btn btn-info" type="submit" id="btnSend">ENVIAR DATA</button>
+			</div>
+  	<br >
+		</form>
+
+	</div>
+	
+
+
+  </body>
+
+
+</html>
