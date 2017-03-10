@@ -57,8 +57,8 @@ CREATE TABLE `mindSlot`.`players` (
 // raiz, mostramos los participantes
 app.get('/', function (req, res) {
    
-   dbCon.query('SELECT * FROM players', function(err, rows){
-    res.render('players', {data : rows});
+   dbCon.query('SELECT * FROM mindSlot.players ORDER BY tiempo', function(err, rows){
+    res.render('userList', {data : rows});
   });
 
 })
@@ -100,7 +100,7 @@ app.post('/createUser', function(req, res) {
             // insert
             var data  = {
               nombre: req.body.nombre, 
-              foto: './public/uploads/thumbs/'+req.files.foto_usuario.name,
+              foto: './uploads/thumbs/'+req.files.foto_usuario.name,
               tiempo: req.body.tiempo,
               firma: req.body.firma_usuario 
             };
