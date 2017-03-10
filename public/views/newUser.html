@@ -2,24 +2,28 @@
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!--
-https://github.com/aguidrevitch/jquery-file-upload-middleware/blob/master/examples/views/form.html
--->
+
 <head>
     <title></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="/scripts/jSignature.min.js"></script>
-	<script src="/scripts/ohsnap.min.js"></script>
+	<!--<script src="/scripts/ohsnap.min.js"></script>-->
 
     <!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="/styles/bootstrap.min.css" >
+	<link rel="stylesheet" href="/styles/modal.css" >
 	<link rel="stylesheet" href="/styles/bootstrap-theme.min.css" >
+	<link rel="stylesheet" href="/styles/jquery-ui-timepicker-addon.min.css" >
+
+	<link rel="stylesheet" href="/styles/jquery-ui.theme.min.css" >
 
 <!-- Latest compiled and minified JavaScript -->
 	<script src="/scripts/bootstrap.min.js" ></script>
 	<script src="/scripts/bootstrap-filestyle.min.js"></script>
+	<script src="/scripts/jquery-ui.min.js"></script>
+	<script src="/scripts/jquery-ui-timepicker-addon.min.js"></script>
 
 	<style type="text/css">
 
@@ -36,6 +40,44 @@ https://github.com/aguidrevitch/jquery-file-upload-middleware/blob/master/exampl
 
 	<script type="text/javascript">
 	$(document).ready(function(){
+
+		// timepicker
+		$("#tiempo").timepicker({
+			controlType:"select",
+			timeFormat:"mm:ss:l"
+		});
+
+
+
+		// if user resize the window, call the same function again
+		// to make sure the overlay fills the screen and dialogbox aligned to center	
+		$(window).resize(function () {
+			
+			//only do it if the dialog box is not hidden
+			if (!$('#dialog-box').is(':hidden')) popup();		
+		});
+
+
+		//Popup dialog
+		function popup(message) {
+				
+			// get the screen height and width  
+			var maskHeight = $(document).height();  
+			var maskWidth = $(window).width();
+			
+			// calculate the values for center alignment
+			var dialogTop =  (maskHeight/3) - ($('#dialog-box').height());  
+			var dialogLeft = (maskWidth/2) - ($('#dialog-box').width()/2); 
+			
+			// assign values to the overlay and dialog box
+			$('#dialog-overlay').css({height:maskHeight, width:maskWidth}).show();
+			$('#dialog-box').css({top:dialogTop, left:dialogLeft}).show();
+			
+			// display the message
+			$('#dialog-message').html(message);
+					
+		}
+
 
 
 		var $sigdiv = $("#signature");
@@ -64,6 +106,8 @@ https://github.com/aguidrevitch/jquery-file-upload-middleware/blob/master/exampl
 		$( "#setPreferences" ).on('submit', function( e ) {
 			console.log('select_link clicked');
 
+			popup("guardando usuario.... <br> por favor espera");
+
  			var formData = new FormData($(this)[0]);
 
   			// Stop form from submitting normally
@@ -79,7 +123,8 @@ https://github.com/aguidrevitch/jquery-file-upload-middleware/blob/master/exampl
 			  cache: false,
 			  success: function(){
 			  	console.log("success");
-			  	ohSnap('Oh Snap! I cannot process your card...', {color: 'red'});
+			  	$('#dialog-message').html("usuario guardado correctamente !!");
+			  	//ohSnap('Oh Snap! I cannot process your card...', {color: 'red'});
 			  }
 			});
 
@@ -88,7 +133,20 @@ https://github.com/aguidrevitch/jquery-file-upload-middleware/blob/master/exampl
 		});
 
 
+		// if user clicked on button, the overlay layer or the dialogbox, close the dialog	
+		$('a.btn-ok, #dialog-overlay, #dialog-box').click(function () {		
+			$('#dialog-overlay, #dialog-box').hide();
 
+			// clear toda la data
+			$('#nombre').val('');
+			$('#tiempo').val('');
+			$('#foto_usuario').val('');
+			$('#firma_usuario').val('');
+			$sigdiv.jSignature("reset");
+
+			return false;
+		});
+		
 
 
 	});
@@ -99,7 +157,19 @@ https://github.com/aguidrevitch/jquery-file-upload-middleware/blob/master/exampl
 </head>
 
    <body>
+
+
    	<div class="container">
+	
+<!-- inicio modal -->
+	<div id="dialog-overlay"></div>
+	<div id="dialog-box">
+		<div class="dialog-content">
+			<div id="dialog-message"></div>
+			<a href="#" class="button">Close</a>
+		</div>
+	</div>
+<!-- fin modal -->
 
    	<br >
    	   	<h1>Nuevo jugador </h1>
@@ -117,15 +187,16 @@ https://github.com/aguidrevitch/jquery-file-upload-middleware/blob/master/exampl
     			<input class="form-control input-lg gris" type="text" value="" id="nombre" name="nombre">
 			</div>
 
-			<div class="form-group">
-				<label for="tiempo">tiempo</label>
-    			<input class="form-control input-lg gris" type="text" value="" id="tiempo" name="tiempo">
-			</div>
 
 			<div class="form-group">
 				<label for="foto_usuario">foto usuario</label>
     			<input type="file" name="foto_usuario" id="foto_usuario" />
 
+			</div>
+
+			<div class="form-group">
+				<label for="tiempo">tiempo</label>
+    			<input class="form-control input-lg gris" type="text" value="" id="tiempo" name="tiempo">
 			</div>
 
 			<div class="form-group">

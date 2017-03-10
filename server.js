@@ -9,6 +9,22 @@ var mustacheExpress = require('mustache-express');
 var bodyParser = require('body-parser');
 var fileUpload = require('express-fileupload');
 var mv = require('mv');
+var easyimg = require('easyimage');
+
+
+//  =============================================================
+//  =============================================================
+//  =============================================================
+//  =============================================================
+
+var  dbCon =  mysql.createPool({
+      host            : 'localhost',
+      user            : 'root',
+      password        : '3mpathy',
+      database        : 'mindSlot',
+      connectionLimit : 10,               // this is the max number of connections before your pool starts waiting for a release
+      multipleStatements : true           // I like this because it helps prevent nested sql statements, it can be buggy though, so be careful
+  });
 
 //  =============================================================
 //  =============================================================
@@ -65,13 +81,41 @@ app.post('/createUser', function(req, res) {
   let sampleFile = req.files.foto_usuario;
  
   // Use the mv() method to place the file somewhere on your server 
+
+
   sampleFile.mv('./public/uploads/'+req.files.foto_usuario.name, function(err) {
     if (err){
     	console.log(err)
     	return res.status(500).send(err);	
     }
 
-    res.sendStatus(200);
+    easyimg.thumbnail({
+            src:'./public/uploads/'+req.files.foto_usuario.name, dst: './public/uploads/thumbs/'+req.files.foto_usuario.name,
+            width:128,
+            rotate:90,
+            x:0, y:0
+        }).then(function (file) {
+
+
+            // insert
+            var data  = {
+              nombre: req.body.nombre, 
+              foto: './public/uploads/thumbs/'+req.files.foto_usuario.name,
+              tiempo: req.body.tiempo,
+              firma: req.body.firma_usuario 
+            };
+
+            dbCon.query('INSERT INTO mindSlot.players SET ?', data, function(err, result) {
+               // Neat!
+               console.log(err)
+               res.send(200);
+             });
+
+            
+        });
+
+
+    
   });
 
 });
