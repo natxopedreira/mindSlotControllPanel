@@ -24,112 +24,204 @@
 	<script src="/scripts/bootstrap-filestyle.min.js"></script>
 	<script src="/scripts/jquery-ui.min.js"></script>
 	<script src="/scripts/jquery-ui-timepicker-addon.min.js"></script>
+	<script src="/scripts/list.js"></script>
 
 	<style type="text/css">
-		
 		@import url(//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
 
-body {
-    padding: 30px 0px 60px;
-}
-.panel > .list-group .list-group-item:first-child {
-    /*border-top: 1px solid rgb(204, 204, 204);*/
-}
-@media (max-width: 767px) {
-    .visible-xs {
-        display: inline-block !important;
-    }
-    .block {
-        display: block !important;
-        width: 100%;
-        height: 1px !important;
-    }
-}
-#back-to-bootsnipp {
-    position: fixed;
-    top: 10px; right: 10px;
-}
+		body {
+		    padding: 30px 0px 60px;
+		}
+		.panel > .list-group .list-group-item:first-child {
+		    /*border-top: 1px solid rgb(204, 204, 204);*/
+		}
+		@media (max-width: 767px) {
+		    .visible-xs {
+		        display: inline-block !important;
+		    }
+		    .block {
+		        display: block !important;
+		        width: 100%;
+		        height: 1px !important;
+		    }
+		}
+		#back-to-bootsnipp {
+		    position: fixed;
+		    top: 10px; right: 10px;
+		}
 
 
-.c-search > .form-control {
-   border-radius: 0px;
-   border-width: 0px;
-   border-bottom-width: 1px;
-   font-size: 1.3em;
-   padding: 12px 12px;
-   height: 44px;
-   outline: none !important;
-}
-.c-search > .form-control:focus {
-    outline:0px !important;
-    -webkit-appearance:none;
-    box-shadow: none;
-}
-.c-search > .input-group-btn .btn {
-   border-radius: 0px;
-   border-width: 0px;
-   border-left-width: 1px;
-   border-bottom-width: 1px;
-   height: 44px;
-}
+		.c-search > .form-control {
+		   border-radius: 0px;
+		   border-width: 0px;
+		   border-bottom-width: 1px;
+		   font-size: 1.3em;
+		   padding: 12px 12px;
+		   height: 44px;
+		   outline: none !important;
+		}
+		.c-search > .form-control:focus {
+		    outline:0px !important;
+		    -webkit-appearance:none;
+		    box-shadow: none;
+		}
+		.c-search > .input-group-btn .btn {
+		   border-radius: 0px;
+		   border-width: 0px;
+		   border-left-width: 1px;
+		   border-bottom-width: 1px;
+		   height: 44px;
+		}
 
 
-.c-list {
-    padding: 0px;
-    min-height: 44px;
-}
-.title {
-    display: inline-block;
-    font-size: 1.7em;
-    font-weight: bold;
-    padding: 5px 15px;
-}
-ul.c-controls {
-    list-style: none;
-    margin: 0px;
-    min-height: 44px;
-}
+		.c-list {
+		    padding: 0px;
+		    min-height: 44px;
+		}
+		.title {
+		    display: inline-block;
+		    font-size: 1.7em;
+		    font-weight: bold;
+		    padding: 5px 15px;
+		}
+		ul.c-controls {
+		    list-style: none;
+		    margin: 0px;
+		    min-height: 44px;
+		}
 
-ul.c-controls li {
-    margin-top: 8px;
-    float: left;
-}
+		ul.c-controls li {
+		    margin-top: 8px;
+		    float: left;
+		}
 
-ul.c-controls li a {
-    font-size: 1.7em;
-    padding: 11px 10px 6px;   
-}
-ul.c-controls li a i {
-    min-width: 24px;
-    text-align: center;
-}
+		ul.c-controls li a {
+		    font-size: 1.7em;
+		    padding: 11px 10px 6px;   
+		}
+		ul.c-controls li a i {
+		    min-width: 24px;
+		    text-align: center;
+		}
 
-ul.c-controls li a:hover {
-    background-color: rgba(51, 51, 51, 0.2);
-}
+		ul.c-controls li a:hover {
+		    background-color: rgba(51, 51, 51, 0.2);
+		}
 
-.c-toggle {
-    font-size: 1.7em;
-}
+		.c-toggle {
+		    font-size: 1.7em;
+		}
 
-.name {
-    font-size: 1.7em;
-    font-weight: 700;
-}
+		.name {
+		    font-size: 1.7em;
+		    font-weight: 700;
+		}
 
-.c-info {
-    padding: 5px 10px;
-    padding-left: 0px;
-    font-size: 1.25em;
-}
+		.c-info {
+		    padding: 5px 10px;
+		    padding-left: 0px;
+		    font-size: 1.25em;
+		}
 	</style>
 
 	<script type="text/javascript">
+
 	$(document).ready(function(){
 
-	
 
-	});
+		///////////////////////////////////////////////////////////
+		var options = {
+		  valueNames: ['posicion', 'name', 'tiempo',{ name: 'userPhoto', attr: 'src' },{ data: ['id'] }]
+		};
+
+		var hackerList = new List('hacker-list', options);
+
+		
+		///////////////////////////////////////////////////////////
+		$.getJSON( "/get/json", function( data ) {
+
+	        	var listItems = $(".list-group li");
+
+	        	
+	        	//$('.list-group li:first-child').remove();
+	        	/// loopeamos por toda la data
+	        	for (var i = data.length - 1; i >= 0; i--) {
+	        		// por cada id
+	        		hackerList.add( { posicion: data[i].idplayer, name:data[i].nombre, tiempo: data[i].tiempo, userPhoto:data[i].foto, id: data[i].idplayer } );
+	        	}
+
+	        	//console.log(data);
+	        	
+
+	        	hackerList.sort('tiempo', { asc: true })
+
+	        	$('.list-group-item[data-id="null"]').remove();
+	        });
+
+
+
+
+
+
+
+		function hasValue(obj, id) {
+
+			var hasMatch =false;
+
+			for (var index = 0; index < obj.length; ++index) {
+
+			 var animal = obj[index];
+
+
+			 if(animal.idplayer == id){
+			   hasMatch = true;
+			   break;
+			 }
+
+			}
+
+			return hasMatch;
+		}
+
+		setInterval(function () {
+
+	        $.getJSON( "/get/json", function( data ) {
+
+	        	var listItems = $(".list-group li");
+
+	        	/// loopeamos por toda la data
+	        	for (var i = data.length - 1; i >= 0; i--) {
+	        		// por cada id
+	        		var id = data[i].idplayer;
+	        		/// buscamos si hay un elemento en la lista con ese id
+	        		var haylo = false;
+
+	        		listItems.each(function(idx, li) {
+	        			var idLista = $(li).attr("data-id");
+
+	        			if(idLista==id){
+	        				haylo = true;
+	        			}
+
+	        		})
+
+	        		if(!haylo){
+	        			
+	        			hackerList.add( { posicion: data[i].idplayer, name:data[i].nombre, tiempo: data[i].tiempo, userPhoto:data[i].foto, id: data[i].idplayer } );
+	        			
+
+
+	        			hackerList.sort('tiempo', { asc: true })
+	        		}
+	        		
+	        	}
+	        	$('.list-group-item[data-id="null"]').remove();
+	        	//console.log(data);
+	        });
+
+	      }, 3000) // milliseconds
+
+		});
 
 	</script>
 	
@@ -137,21 +229,57 @@ ul.c-controls li a:hover {
 </head>
 
    <body>
-   	<div class="container">
-   		<ul class="list-group">
-	      {{#data}}
-	      	<li class="list-group-item">
-                <div class="col-xs-12 col-sm-3">
-                	<img src="{{foto}}" alt="{{nombre}}" class="img-responsive img-circle" />
+
+
+ 	<div class="container">
+
+ 	<div id="hacker-list">
+   		<ul class="list-group list">
+
+	      	<li class="list-group-item" data-id="">
+
+	      		<div class="col-xs-12 col-sm-1"  style="vertical-align: left; padding-left: 0px">
+                	<h1 class="posicion"></h1>
                 </div>
+            
+                <div class="col-xs-12 col-sm-2"  style="vertical-align: left; padding-left: 0px">
+                	<img src="" alt="" class="img-responsive img-rounded userPhoto" style="vertical-align: left" />
+                </div>
+            
+                <div class="col-xs-12 col-sm-9">
+                	<span class="name"></span><br/>
+                	<span class="c-info tiempo"></span><br/>
+                </div>
+
+                <div class="clearfix"></div>
+            
+            </li>
+
+        </ul>
+    </div>
+
+	     <!-- {{#data}}
+	      	<li class="list-group-item" id="{{idplayer}}">
+
+	      		<div class="col-xs-12 col-sm-1"  style="vertical-align: left; padding-left: 0px">
+                	<h1 class="posicion">00</h1>
+                </div>
+            
+                <div class="col-xs-12 col-sm-2"  style="vertical-align: left; padding-left: 0px">
+                	<img src="{{foto}}" alt="{{nombre}}" class="img-responsive img-rounded" style="vertical-align: left" />
+                </div>
+            
                 <div class="col-xs-12 col-sm-9">
                 	<span class="name">{{nombre}}</span><br/>
-                	<span class="c-info">{{tiempo}}</span><br/>
+                	<span class="c-info tiempo">{{tiempo}}</span><br/>
                 </div>
+
                 <div class="clearfix"></div>
+            
             </li>
-	      {{/data}}
-	    </ul>
+	      {{/data}}-->
+
+	    
 
    	</div>
   </body>

@@ -8,6 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
 	<script src="/scripts/jSignature.min.js"></script>
 	<!--<script src="/scripts/ohsnap.min.js"></script>-->
 
@@ -15,7 +16,6 @@
 	<link rel="stylesheet" href="/styles/bootstrap.min.css" >
 	<link rel="stylesheet" href="/styles/modal.css" >
 	<link rel="stylesheet" href="/styles/bootstrap-theme.min.css" >
-	<link rel="stylesheet" href="/styles/jquery-ui-timepicker-addon.min.css" >
 
 	<link rel="stylesheet" href="/styles/jquery-ui.theme.min.css" >
 
@@ -23,7 +23,7 @@
 	<script src="/scripts/bootstrap.min.js" ></script>
 	<script src="/scripts/bootstrap-filestyle.min.js"></script>
 	<script src="/scripts/jquery-ui.min.js"></script>
-	<script src="/scripts/jquery-ui-timepicker-addon.min.js"></script>
+
 
 	<style type="text/css">
 
@@ -42,11 +42,6 @@
 	$(document).ready(function(){
 
 		// timepicker
-		$("#tiempo").timepicker({
-			controlType:"select",
-			timeFormat:"mm:ss:l"
-		});
-
 
 
 		// if user resize the window, call the same function again
@@ -103,13 +98,48 @@
                 buttonText : 'Foto usuario'
 			});
 
+	jQuery.validator.setDefaults({
+		  debug: true,
+		  success: "valid"
+		});
+
+		$( "#setPreferences" ).validate({
+		  rules: {
+		  	nombre: {
+		      required: true
+		    },
+		    foto_usuario: {
+		      required: true
+		    },
+		    minutes: {
+		      required: true,
+		      minlength: 2
+		    },
+		    seconds: {
+		      required: true,
+		      minlength: 2
+		    },
+		    miliseconds: {
+		      required: true,
+		      minlength: 2
+		    },
+		    firma_usuario: {
+		      required: true
+		    }
+		  }
+		});
+
 		$( "#setPreferences" ).on('submit', function( e ) {
+
+
+if($( "#setPreferences" ).valid()){
+
 			console.log('select_link clicked');
 
 			popup("guardando usuario.... <br> por favor espera");
 
- 			var formData = new FormData($(this)[0]);
-
+ 			
+			var formData = new FormData($(this)[0]);
   			// Stop form from submitting normally
   			e.preventDefault();
 
@@ -121,15 +151,26 @@
 			  contentType: false,
 			  processData: false,
 			  cache: false,
+			  beforeSend: function(xhr, settings) {
+        			// I want to change the data here.
+        			var minutes = $('#minutes').val();
+        			var secs = $('#seconds').val();
+        			var msecs = $('#miliseconds').val();
+
+        			var completo = minutes+":"+secs+":"+msecs;
+
+        			settings.data.set("tiempo", completo);
+    			},
 			  success: function(){
 			  	console.log("success");
 			  	$('#dialog-message').html("usuario guardado correctamente !!");
+			  	location.reload();
 			  	//ohSnap('Oh Snap! I cannot process your card...', {color: 'red'});
 			  }
 			});
 
 			//return false;
-
+}
 		});
 
 
@@ -147,8 +188,7 @@
 			return false;
 		});
 		
-
-
+		
 	});
 
 	</script>
@@ -190,14 +230,30 @@
 
 			<div class="form-group">
 				<label for="foto_usuario">foto usuario</label>
-    			<input type="file" name="foto_usuario" id="foto_usuario" />
+    			<input type="file" name="foto_usuario" id="foto_usuario">
 
 			</div>
 
 			<div class="form-group">
-				<label for="tiempo">tiempo</label>
-    			<input class="form-control input-lg gris" type="text" value="" id="tiempo" name="tiempo">
+			<div class="row">
+				<div class="col-md-4">
+					<label for="minutes" >minutos</label>
+					<input class="form-control input-lg gris" type="number" id="minutes" name="minutes" value="00">
+				</div>
+
+				<div class="col-md-4">
+    				<label for="seconds">segundos</label>
+					<input class="form-control input-lg gris" type="number" id="seconds" name="seconds" value="00">
+				</div>
+				
+				<div class="col-md-4">
+					<label for="miliseconds">milisegundos</label>
+					<input class="form-control input-lg gris" type="number" id="miliseconds" name="miliseconds" value="000">
+				</div>
+
 			</div>
+			</div>
+
 
 			<div class="form-group">
 				<label for="firma_usuario">firma usuario</label>
@@ -239,7 +295,6 @@ Para ejercer el derecho de acceder a tus datos, rectificarlos, cancelarlos u opo
 
 	</div>
 	
-
 
   </body>
 

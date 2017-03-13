@@ -55,9 +55,9 @@ CREATE TABLE `mindSlot`.`players` (
 //  =============================================================
 //  =============================================================
 // raiz, mostramos los participantes
-app.get('/', function (req, res) {
+app.get('/userList', function (req, res) {
    
-   dbCon.query('SELECT * FROM mindSlot.players ORDER BY tiempo', function(err, rows){
+  dbCon.query('SELECT * FROM mindSlot.players ORDER BY tiempo', function(err, rows){
     res.render('userList', {data : rows});
   });
 
@@ -75,7 +75,7 @@ app.post('/createUser', function(req, res) {
   //if (!req.files)
   //  return res.status(400).send('No files were uploaded.');
   
-  console.log(req.body)
+  //console.log(req.body)
 
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file 
   let sampleFile = req.files.foto_usuario;
@@ -107,8 +107,12 @@ app.post('/createUser', function(req, res) {
 
             dbCon.query('INSERT INTO mindSlot.players SET ?', data, function(err, result) {
                // Neat!
-               console.log(err)
-               res.send(200);
+              console.log(err);
+
+              res.send('/userList', {data : 'rows'});
+
+              res.send(200);
+
              });
 
             
@@ -120,7 +124,15 @@ app.post('/createUser', function(req, res) {
 
 });
 
+app.get('/get/json', function(req,res){
 
+  dbCon.query('SELECT * FROM mindSlot.players ORDER BY tiempo', function(err, rows){
+    //res.setHeader('Content-Type', 'application/json');
+    res.send(rows);
+    //console.log(JSON.stringify(rows));
+  });
+
+});
 
 //  =============================================================
 //  =============================================================
