@@ -29,6 +29,7 @@
 	
 	/* css3 border radius */
 	-moz-border-radius: 5px;
+	
     -webkit-border-radius: 5px;
 	
 	background:#eee;
@@ -37,10 +38,12 @@
 	
 	/* make sure it has the highest z-index */
 	position:absolute; 
+
 	z-index:5000; 
 
 	/* hide it by default */
 	display:none;
+	
 }
 
 #dialog-box .dialog-content {

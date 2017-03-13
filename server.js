@@ -26,10 +26,12 @@ var  dbCon =  mysql.createPool({
       multipleStatements : true           // I like this because it helps prevent nested sql statements, it can be buggy though, so be careful
   });
 
+
 //  =============================================================
 //  =============================================================
 //  =============================================================
 //  =============================================================
+
 app.use(bodyParser.urlencoded({ extended: false })) 
 app.use(bodyParser.json());
 
