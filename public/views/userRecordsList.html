@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="/scripts/jSignature.min.js"></script>
+	<!--http://bootsnipp.com/snippets/featured/contact-list-->
+
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="/styles/bootstrap.min.css" >
+	<link rel="stylesheet" href="/styles/modal.css" >
+	<link rel="stylesheet" href="/styles/bootstrap-theme.min.css" >
+	<link rel="stylesheet" href="/styles/jquery-ui-timepicker-addon.min.css" >
+
+	<link rel="stylesheet" href="/styles/jquery-ui.theme.min.css" >
+
+<!-- Latest compiled and minified JavaScript -->
+	<script src="/scripts/bootstrap.min.js" ></script>
+	<script src="/scripts/bootstrap-filestyle.min.js"></script>
+	<script src="/scripts/jquery-ui.min.js"></script>
+	<script src="/scripts/jquery-ui-timepicker-addon.min.js"></script>
+	<script src="/scripts/list.js"></script>
+
+	
+	
+	<script type="text/javascript">
+		function deleteRecord(button){
+			var item = $(button).closest("tr").find("input[name*='idplayer']") .val();         // Retrieves the text within <td
+            $.ajax({
+			  type: "POST",
+			  url: '/admin/delete',
+			  data: { idplayer: item },
+			  success: function(){
+			  	console.log("success");
+			  	//$('#dialog-message').html("usuario guardado correctamente !!");
+			  	location.reload();
+			  	//ohSnap('Oh Snap! I cannot process your card...', {color: 'red'});
+			  }
+			});
+
+		}
+
+
+		function updateRecord(button){
+			var _idplayer = $(button).closest("tr").find("input[name*='idplayer']") .val(); 
+			var _nombre = $(button).closest("tr").find("input[name*='nombre']") .val(); 
+			var _tiempo = $(button).closest("tr").find("input[name*='tiempo']") .val();
+			var _telefono = $(button).closest("tr").find("input[name*='telefono']") .val(); 
+
+			$.ajax({
+			  type: "POST",
+			  url: '/admin/update',
+			  data: { idplayer: _idplayer, nombre:_nombre, tiempo:_tiempo,telefono:_telefono },
+			  success: function(){
+			  	console.log("success");
+			  	//$('#dialog-message').html("usuario guardado correctamente !!");
+			  	location.reload();
+			  	//ohSnap('Oh Snap! I cannot process your card...', {color: 'red'});
+			  }
+			});
+		}
+
+		
+
+	</script>
+	
+
+</head>
+
+   <body>
+
+
+ 	<div class="container">
+ 	<h1>LISTA DE PARTICIPANTES</h1>
+
+ 	<table class="table table-striped">
+	  <thead>
+	    <tr>
+	    	<th>Id player</th>
+			<th>Nombre</th>
+			<th>Tiempo</th>
+			<th>Telefono</th>
+			<th>Borrar</th>
+			<th>Editar</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  {{#data}}
+	    <tr>
+			<td><input type="hidden" name="idplayer" value="{{idplayer}}">{{idplayer}}</td>
+			<td><input type="text" name="nombre" value="{{nombre}}" class="form-control input"></td>
+			<td><input type="text" name="tiempo" value="{{tiempo}}" class="form-control input"></td>
+			<td><input type="text" name="telefono" value="{{tlf}}" class="form-control input"></td>
+			<td>
+				<button type="button" class="btn btn-danger" id="delete" onclick="deleteRecord(this)">Borrar Usuario</button>
+			</td>
+			<td>
+				<button type="button" class="btn btn-warning" id="edit" onclick="updateRecord(this)">Actualizar Datos</button>
+			</td>
+	    </tr>
+	    {{/data}}
+	  </tbody>
+	</table>
+
+	     <!-- {{#data}}
+	      	<li class="list-group-item" id="{{idplayer}}">
+
+	      		<div class="col-xs-12 col-sm-1"  style="vertical-align: left; padding-left: 0px">
+                	<h1 class="posicion">00</h1>
+                </div>
+            
+                <div class="col-xs-12 col-sm-2"  style="vertical-align: left; padding-left: 0px">
+                	<img src="{{foto}}" alt="{{nombre}}" class="img-responsive img-rounded" style="vertical-align: left" />
+                </div>
+            
+                <div class="col-xs-12 col-sm-9">
+                	<span class="name">{{nombre}}</span><br/>
+                	<span class="c-info tiempo">{{tiempo}}</span><br/>
+                </div>
+
+                <div class="clearfix"></div>
+            
+            </li>
+	      {{/data}}-->
+
+	    
+
+   	</div>
+  </body>
+

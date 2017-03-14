@@ -93,8 +93,8 @@ app.post('/createUser', function(req, res) {
 
     easyimg.thumbnail({
             src:'./public/uploads/'+req.files.foto_usuario.name, dst: './public/uploads/thumbs/'+req.files.foto_usuario.name,
-            width:128,
-            rotate:90,
+            width:180,
+            height:135,
             x:0, y:0
         }).then(function (file) {
 
@@ -102,9 +102,10 @@ app.post('/createUser', function(req, res) {
             // insert
             var data  = {
               nombre: req.body.nombre, 
-              foto: './uploads/thumbs/'+req.files.foto_usuario.name,
+              foto: req.files.foto_usuario.name,
               tiempo: req.body.tiempo,
-              firma: req.body.firma_usuario 
+              firma: req.body.firma_usuario,
+              tlf: req.body.tlf 
             };
 
             dbCon.query('INSERT INTO mindSlot.players SET ?', data, function(err, result) {
@@ -126,6 +127,53 @@ app.post('/createUser', function(req, res) {
 
 });
 
+//// panel de administracion
+
+// lista usuarios
+app.get('/admin/list', function(req,res){
+
+  dbCon.query('SELECT * FROM mindSlot.players ORDER BY tiempo', function(err, rows){
+    //res.setHeader('Content-Type', 'application/json');
+    res.render('userRecordsList', {data : rows});
+    //console.log(JSON.stringify(rows));
+  });
+
+});
+// update usuario
+app.post('/admin/update', function(req,res){
+    var data  = {
+      nombre: req.body.nombre, 
+      tiempo: req.body.tiempo,
+      tlf: req.body.telefono,
+    };
+
+  dbCon.query('UPDATE mindSlot.players SET ? WHERE idplayer = ?', [data, req.body.idplayer], function(err, rows){
+    if (err) {
+      console.log(err);
+    }
+    res.send(200);
+  })
+
+});
+// delete usuario
+app.post('/admin/delete', function(req,res){
+
+  dbCon.query('DELETE FROM mindSlot.players WHERE idplayer='+req.body.idplayer, function(err, rows){
+    if (err) {
+      console.log(err);
+    }
+    res.send(200);
+  })
+  
+  
+});
+
+
+
+
+
+
+
 app.get('/get/json', function(req,res){
 
   dbCon.query('SELECT * FROM mindSlot.players ORDER BY tiempo', function(err, rows){
@@ -135,6 +183,19 @@ app.get('/get/json', function(req,res){
   });
 
 });
+
+
+app.get('/get/jsonOF', function(req,res){
+
+  dbCon.query('SELECT * FROM mindSlot.players ORDER BY tiempo LIMIT 10', function(err, rows){
+    //res.setHeader('Content-Type', 'application/json');
+    res.send(rows);
+    //console.log(JSON.stringify(rows));
+  });
+
+});
+
+
 
 //  =============================================================
 //  =============================================================
