@@ -33,6 +33,8 @@ bool sortMe(elemento & a, elemento & b){
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+ofHideCursor();
+
    //callNodeServer();
 
     // consultamos al server cada 10 segundos
@@ -48,12 +50,9 @@ void ofApp::setup(){
 
     fuenteSkin.loadFont("ubuntu-font/UbuntuMono-R.ttf",36);
     fuenteSkinTiempos.loadFont("ubuntu-font/Ubuntu-LI.ttf",42);
-    fuenteSkinPosicion.loadFont("ubuntu-font/UbuntuMono-BI.ttf",47);
+    fuenteSkinPosicion.loadFont("ubuntu-font/UbuntuMono-BI.ttf",60);
 
     fuenteSkinNombre.loadFont("ubuntu-font/Ubuntu-MI.ttf",24);
-
-
-
 }
 
 //--------------------------------------------------------------
@@ -70,7 +69,7 @@ void ofApp::draw(){
     int inicialY = 50;
 
     for(int f = elementos.size()-1; f>=0; f--){
-         barra.draw((60) + 125*f,0);
+         barra.draw(10, (60) + 125*f);
     }
 
 
@@ -80,18 +79,18 @@ void ofApp::draw(){
         ofPushMatrix();
             ofPushStyle();
 
-                ofTranslate((335) + (125*i),570);
-                ofRotate(270);
+                ofTranslate(10,(335) + (125*i));
+                //ofRotate(270);
 
                 ofSetColor(1,9,107);
-                fuenteSkinTiempos.drawString(elementos.at(i).tiempoFormat, 0,0);
-                fuenteSkinNombre.drawString(elementos.at(i).nombre, -215,0);
+                fuenteSkinTiempos.drawString(elementos.at(i).tiempoFormat, 520,0);
+                fuenteSkinNombre.drawString(elementos.at(i).nombre, 300,0);
 
                 ofSetColor(219,88,0);
-                fuenteSkinPosicion.drawString("O"+ofToString(i+1),-495,-3);
+                fuenteSkinPosicion.drawString("O"+ofToString(i+1),3,0);
 
                 ofSetColor(255,255,255);
-                elementos.at(i).thumb.draw(-402,-94);
+                elementos.at(i).thumb.draw(109,-94);
 
             ofPopStyle();
         ofPopMatrix();

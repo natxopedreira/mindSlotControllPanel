@@ -7,7 +7,7 @@
     <title></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 	
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="/scripts/jquery.min.js"></script>
 	<script src="/scripts/jSignature.min.js"></script>
 	<!--http://bootsnipp.com/snippets/featured/contact-list-->
 
@@ -51,11 +51,13 @@
 			var _nombre = $(button).closest("tr").find("input[name*='nombre']") .val(); 
 			var _tiempo = $(button).closest("tr").find("input[name*='tiempo']") .val();
 			var _telefono = $(button).closest("tr").find("input[name*='telefono']") .val(); 
+			var _dni = $(button).closest("tr").find("input[name*='dni']") .val();
+			var _apellido = $(button).closest("tr").find("input[name*='apellido']") .val(); 
 
 			$.ajax({
 			  type: "POST",
 			  url: '/admin/update',
-			  data: { idplayer: _idplayer, nombre:_nombre, tiempo:_tiempo,telefono:_telefono },
+			  data: { idplayer: _idplayer, nombre:_nombre, tiempo:_tiempo, apellido:_apellido, dni:_dni, telefono:_telefono },
 			  success: function(){
 			  	console.log("success");
 			  	//$('#dialog-message').html("usuario guardado correctamente !!");
@@ -83,6 +85,8 @@
 	    <tr>
 	    	<th>Id player</th>
 			<th>Nombre</th>
+			<th>Apellidos</th>
+			<th>DNI</th>
 			<th>Tiempo</th>
 			<th>Telefono</th>
 			<th>Borrar</th>
@@ -94,6 +98,8 @@
 	    <tr>
 			<td><input type="hidden" name="idplayer" value="{{idplayer}}">{{idplayer}}</td>
 			<td><input type="text" name="nombre" value="{{nombre}}" class="form-control input"></td>
+			<td><input type="text" name="apellido" value="{{apellido}}" class="form-control input"></td>
+			<td><input type="text" name="dni" value="{{dni}}" class="form-control input"></td>
 			<td><input type="text" name="tiempo" value="{{tiempo}}" class="form-control input"></td>
 			<td><input type="text" name="telefono" value="{{tlf}}" class="form-control input"></td>
 			<td>

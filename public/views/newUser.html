@@ -7,8 +7,8 @@
     <title></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 	
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+	<script src="/scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="/scripts/jquery.validate.min.js"></script>
 	<script src="/scripts/jSignature.min.js"></script>
 	<!--<script src="/scripts/ohsnap.min.js"></script>-->
 
@@ -37,13 +37,82 @@
 		font-size: 1.5em;
 	}
 
+	.error{ color: red }
+
 	</style>
 
 	<script type="text/javascript">
 	$(document).ready(function(){
 
-		// timepicker
+		function addLeadingZeros (n, length)
+		{
+		    var str = (n > 0 ? n : -n) + "";
+		    var zeros = "";
+		    for (var i = length - str.length; i > 0; i--)
+		        zeros += "0";
+		    zeros += str;
+		    return n >= 0 ? zeros : "-" + zeros;
+		}
 
+		$("#minutes").focus(function() {
+		  this.value = "";
+
+
+		});
+
+		$("#seconds").focus(function() {
+		  this.value = "";
+		});
+		$("#miliseconds").focus(function() {
+		  this.value = "";
+		});
+
+		$("#minutes").focusout(function() {
+		  var largo = $(this).val().length;
+		  $(this).val(addLeadingZeros($(this).val(),2));
+
+
+		  	var minutes = $('#minutes').val();
+			var secs = $('#seconds').val();
+			var msecs = $('#miliseconds').val();
+
+			var completo = minutes+":"+secs+":"+msecs;
+			
+			$("#tiempo").val(completo);
+
+		});
+
+		$("#seconds").focusout(function() {
+		  var largo = $(this).val().length;
+		  $(this).val(addLeadingZeros($(this).val(),2));
+
+
+
+		  		  	var minutes = $('#minutes').val();
+			var secs = $('#seconds').val();
+			var msecs = $('#miliseconds').val();
+
+			var completo = minutes+":"+secs+":"+msecs;
+			
+			$("#tiempo").val(completo);
+
+
+		});
+
+		$("#miliseconds").focusout(function() {
+		  var largo = $(this).val().length;
+		  $(this).val(addLeadingZeros($(this).val(),3));
+
+
+		  	var minutes = $('#minutes').val();
+			var secs = $('#seconds').val();
+			var msecs = $('#miliseconds').val();
+
+			var completo = minutes+":"+secs+":"+msecs;
+			
+			$("#tiempo").val(completo);
+
+		});
 
 		// if user resize the window, call the same function again
 		// to make sure the overlay fills the screen and dialogbox aligned to center	
@@ -94,19 +163,28 @@
 		 })
 
 
+        /*$("#btnSend").click(function(){
+        	$( "#setPreferences" ).submit();
+        });*/
+
+
+
+
 		$('#foto_usuario').filestyle({
 				buttonName : 'btn-success',
                 buttonText : 'Foto usuario'
 			});
 
-	jQuery.validator.setDefaults({
-		  debug: true,
-		  success: "valid"
-		});
 
 		$( "#setPreferences" ).validate({
 		  rules: {
 		  	nombre: {
+		      required: true
+		    },
+		    apellidos: {
+		      required: true
+		    },
+		    dni: {
 		      required: true
 		    },
 		    foto_usuario: {
@@ -132,51 +210,70 @@
 		    }
 		  }
 		});
+	$("#btnSend").click(function(){
+        	$("#setPreferences").valid();
+        });
+		//$( "#setPreferences" ).on('submit', function( e ) {
 
-		$( "#setPreferences" ).on('submit', function( e ) {
 
+			//if($( "#setPreferences" ).valid()){
 
-if($( "#setPreferences" ).valid()){
+						//console.log('select_link clicked');
 
-			console.log('select_link clicked');
+						
 
-			popup("guardando usuario.... <br> por favor espera");
+			 			
+						/*var formData = new FormData($(this)[0]);
+			  			// Stop form from submitting normally
+			  			e.preventDefault();
 
- 			
-			var formData = new FormData($(this)[0]);
-  			// Stop form from submitting normally
-  			e.preventDefault();
+						$.ajax({
+						  type: "POST",
+						  async: false,
+						  url: '/createUser',
+						  data: formData,
+						  contentType: false,
+						  processData: false,
+						  cache: false})
+						.done(function() {
+						    console.log("success");
+						  	$('#dialog-message').html("usuario guardado correctamente !!");
+						  	location.reload();
+						  })*/
+						/*.beforeSend(function(xhr, settings) {
+						    // I want to change the data here.
+			        			var minutes = $('#minutes').val();
+			        			var secs = $('#seconds').val();
+			        			var msecs = $('#miliseconds').val();
 
-			$.ajax({
-			  type: "POST",
-			  async: false,
-			  url: '/createUser',
-			  data: formData,
-			  contentType: false,
-			  processData: false,
-			  cache: false,
-			  beforeSend: function(xhr, settings) {
-        			// I want to change the data here.
-        			var minutes = $('#minutes').val();
-        			var secs = $('#seconds').val();
-        			var msecs = $('#miliseconds').val();
+			        			var completo = minutes+":"+secs+":"+msecs;
 
-        			var completo = minutes+":"+secs+":"+msecs;
+			        			settings.data.set("tiempo", completo);
+						  });*/
 
-        			settings.data.set("tiempo", completo);
-    			},
-			  success: function(){
-			  	console.log("success");
-			  	$('#dialog-message').html("usuario guardado correctamente !!");
-			  	location.reload();
-			  	//ohSnap('Oh Snap! I cannot process your card...', {color: 'red'});
-			  }
-			});
+						//return false;
+			//}
+		//});
 
-			//return false;
-}
-		});
+						  //timeout: 240000,
+						  //headers: { "cache-control": "no-cache" },
+						/*  beforeSend: function(xhr, settings) {
+			        			// I want to change the data here.
+			        			var minutes = $('#minutes').val();
+			        			var secs = $('#seconds').val();
+			        			var msecs = $('#miliseconds').val();
 
+			        			var completo = minutes+":"+secs+":"+msecs;
+
+			        			settings.data.set("tiempo", completo);
+			    			},
+						  success: function(){
+						  	console.log("success");
+						  	$('#dialog-message').html("usuario guardado correctamente !!");
+						  	location.reload();
+						  	//ohSnap('Oh Snap! I cannot process your card...', {color: 'red'});
+						  }*/
+						
 
 		// if user clicked on button, the overlay layer or the dialogbox, close the dialog	
 		$('a.btn-ok, #dialog-overlay, #dialog-box').click(function () {		
@@ -184,7 +281,9 @@ if($( "#setPreferences" ).valid()){
 
 			// clear toda la data
 			$('#nombre').val('');
-			$('#tiempo').val('');
+			$('#minutes').val('');
+			$('#seconds').val('');
+			$('#miliseconds').val('');
 			$('#foto_usuario').val('');
 			$('#firma_usuario').val('');
 			$sigdiv.jSignature("reset");
@@ -220,19 +319,29 @@ if($( "#setPreferences" ).valid()){
   	<br >
 
 
-		<form  class="form-fatter" name="setPreferences" id="setPreferences" action="/updatePreferences" method="POST" enctype="multipart/form-data">
+		<form  class="form-fatter" name="setPreferences" id="setPreferences" action="/createUser" method="POST" enctype="multipart/form-data">
 
 			<div id="user_data">
 
 				<div id="ohsnap"></div>
 
 			<div class="form-group">
-				<label for="nombre">nickname usuario</label>
+				<label for="nombre">nombre</label>
     			<input class="form-control input-lg gris" type="text" value="" id="nombre" name="nombre">
 			</div>
 
 			<div class="form-group">
-				<label for="nombre">telefono</label>
+				<label for="nombre">apellidos </label>
+    			<input class="form-control input-lg gris" type="text" value="" id="apellido" name="apellido">
+			</div>
+			
+			<div class="form-group">
+				<label for="nombre">dni</label>
+    			<input class="form-control input-lg gris" type="text" value="" id="dni" name="dni">
+			</div>
+
+			<div class="form-group">
+				<label for="nombre">twitter</label>
     			<input class="form-control input-lg gris" type="text" value="" id="tlf" name="tlf">
 			</div>
 
@@ -262,7 +371,7 @@ if($( "#setPreferences" ).valid()){
 
 			</div>
 			</div>
-
+			<input class="form-control input-lg gris" type="text" id="tiempo" name="tiempo">
 
 			<div class="form-group">
 				<label for="firma_usuario">firma usuario</label>
@@ -275,31 +384,33 @@ if($( "#setPreferences" ).valid()){
 			</div>
   	<br >
 			<div class="row_submit">
-				<p style="font-size:0.7em">Te informamos de que ABANCA Corporación Bancaria, S.A. (“ABANCA”) incorporará a sus ficheros los datos que facilites y/o que se generen con ocasión de la presente solicitud, para su tratamiento a los fines de:
+				<p style="font-size:0.7em">
+				<b>AUTORIZO</b>
+<br ><br >
+A ABANCA Corporación Bancaria, S.A. (en lo sucesivo, ABANCA), con CIF A-70302039, para que pueda:
+<br ><br >
+<ul style="font-size:0.7em">
+	<li>A. Captar nuestra imagen mediante fotografía/s en los stands que ABANCA tiene instalado en la Universidad de la Coruña entre el 20 y el 23 de marzo de 2017;</li>
 
-i. la gestión de dicha solicitud, incluyendo, en su caso, la evaluación de la viabilidad y/o la valoración del riesgo de crédito de la operación solicitada mediante la aplicación de técnicas de scoring y análisis experto;
+	<li>B. Llevar a cabo la reproducción, distribución, uso, tratamiento, difusión y/o publicación de la/s fotografía/s referidas en el apartado (A) anterior en los perfiles oficiales de ABANCA en las Redes Sociales (por ejemplo, Facebook y/o Twitter); y</li>
 
-ii. la gestión y control del contrato que, en su caso, conciertes con ABANCA, incluyendo la evaluación, valoración y seguimiento del riesgo de crédito de dicho contrato mediante la aplicación de técnicas de scoring y análisis experto;
+	<li>C. Proceder al tratamiento de nuestros datos personales, incluidas la/s citadas fotografía/s, para gestionar mi participación en el circuito Mindrace de campus ABANCA, en el que el ganador de cada día será presentado en el perfil oficial de ABANCA en Twitter entre el 20 y el 23 de marzo de 2017.</li>
+</ul>
 
-iii. el cumplimiento de las obligaciones normativas; y
+<span style="font-size:0.7em">
+Declaro que conozco y acepto las Bases legales, Términos y Condiciones.
+<br >
+La autorización contenida en el presente documento tiene carácter gratuito y duración indefinida, pudiendo ser revocada en cualquier momento, sin que dicha revocación tenga efectos retroactivos.
 
-iv. el envío por ABANCA o por las empresas de su grupo económico, incluso por correo electrónico, mensajes SMS u otro medio de comunicación electrónica equivalente, de informaciones publicitarias o promocionales sobre los productos y servicios ofrecidos o comercializados por ABANCA o por las empresas de su grupo económico, cuyas respectivas actividades comprenden las de tipo financiero, en sus diversas modalidades, social, asegurador, inmobiliario, marketing y servicios de consultoría y asesoramiento.
-
-Con los fines antes expresados, ABANCA podrá también tratar tus datos de los que, en su caso, ya disponga en sus ficheros, así como consultar y tratar:
-
-a) tus datos económicos y financieros que, en su caso, figuren en fuentes accesibles al público;
-
-b) tus datos de solvencia que, en su caso, figuren en ficheros de información sobre solvencia patrimonial y crédito, inscritos en la Agencia Española de Protección de Datos; y
-
-c) tus datos que, en su caso, figuren registrados en la Central de Información de Riesgos del Banco de España.
-
-Salvo que se indique otra cosa, las respuestas a las cuestiones planteadas por ABANCA con motivo de esta solicitud tienen carácter necesario, por lo que la negativa a facilitar los datos requeridos impedirá tramitar dicha solicitud.
-
-Para ejercer el derecho de acceder a tus datos, rectificarlos, cancelarlos u oponerte a su tratamiento, podrás enviar un escrito a nuestro Servicio de Atención al Cliente en A Coruña, Calle San Andrés, 135-137, Planta Baja, 15003. Además, solo para oponerte a que te sean enviadas informaciones publicitarias o promocionales por correo electrónico, mensajes SMS u otros medios de comunicación electrónica equivalentes, podrás también enviar, en cualquier momento, un mensaje manifestando dicha oposición a la dirección bajas@abanca.com.</p>
+<br >
+Conforme a la Ley Orgánica 15/1999, de 13 de diciembre, de Protección de Datos de Carácter Personal, quedo informado/a de que los datos recogidos en el presente documento, así como los datos que se recaben y/o generen con motivo de la autorización contenida en dicho documento, serán incorporados a un fichero titularidad de ABANCA. Esta Entidad podrá efectuar el tratamiento, automatizado o no, de todos los referidos datos, con la finalidad de gestionar la autorización contenida en este documento y proceder a la captación, reproducción, distribución, uso, tratamiento, difusión y/o publicación de la imagen/es conforme a lo previsto en la presente autorización. 
+Asimismo quedo informado/a de que podré ejercer los derechos de acceso, rectificación, cancelación y oposición, enviando un escrito a ABANCA, Entidad responsable del tratamiento, en C/ Rúa Nueva, nº 30, 6ª planta, 15003 (A Coruña).
+</span>
+</p>
 
 				<button class="btn btn-info" type="submit" id="btnSend">ENVIAR DATA</button>
 			</div>
-  	<br >
+  	<br ><br ><br >
 		</form>
 
 	</div>

@@ -1,3 +1,9 @@
+#!/usr/bin/env nodejs --use_strict
+/*
+https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-16-04
+*/
+
+
 'use_strict';
 
 var fs = require('fs');
@@ -78,52 +84,85 @@ app.post('/createUser', function(req, res) {
   //  return res.status(400).send('No files were uploaded.');
   
   //console.log(req.body)
+  //console.log(req.files)
+
+
+
+  if(req.files.foto_usuario){
 
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file 
   let sampleFile = req.files.foto_usuario;
  
   // Use the mv() method to place the file somewhere on your server 
 
-
-  sampleFile.mv('./public/uploads/'+req.files.foto_usuario.name, function(err) {
-    if (err){
-    	console.log(err)
-    	return res.status(500).send(err);	
-    }
-
-    easyimg.thumbnail({
-            src:'./public/uploads/'+req.files.foto_usuario.name, dst: './public/uploads/thumbs/'+req.files.foto_usuario.name,
-            width:180,
-            height:135,
-            x:0, y:0
-        }).then(function (file) {
+  var mod = Date.now();
+  var nombre = mod+"_"+req.files.foto_usuario.name;
 
 
-            // insert
-            var data  = {
-              nombre: req.body.nombre, 
-              foto: req.files.foto_usuario.name,
-              tiempo: req.body.tiempo,
-              firma: req.body.firma_usuario,
-              tlf: req.body.tlf 
-            };
 
-            dbCon.query('INSERT INTO mindSlot.players SET ?', data, function(err, result) {
-               // Neat!
-              console.log(err);
+            sampleFile.mv('./public/uploads/'+nombre, function(err) {
+              if (err){
+              	console.log(err)
+              	return res.status(500).send(err);	
+              }
 
-              res.send('/userList', {data : 'rows'});
-
-              res.send(200);
-
-             });
-
-            
-        });
+              easyimg.thumbnail({
+                      src:'./public/uploads/'+nombre, dst: './public/uploads/thumbs/'+nombre,
+                      width:180,
+                      height:135,
+                      x:0, y:0
+                  }).then(function (file) {
 
 
-    
-  });
+                      // insert
+                      var data  = {
+                        nombre: req.body.nombre, 
+                        foto: nombre,
+                        tiempo: req.body.tiempo,
+                        firma: req.body.firma_usuario,
+                        apellido: req.body.apellido,
+                        dni: req.body.dni,
+                        tlf: req.body.tlf 
+                      };
+
+                      dbCon.query('INSERT INTO mindSlot.players SET ?', data, function(err, result) {
+                         // Neat!
+                        console.log(err);
+
+                        //res.send('/userList', {data : 'rows'});
+                        res.redirect('/newUser');
+                        //res.send(200);
+
+                       });
+
+                      
+                  });
+
+
+              
+            });
+  }else{
+                      var data  = {
+                        nombre: req.body.nombre, 
+                        foto: "abanca_pantalla.png",
+                        tiempo: req.body.tiempo,
+                        firma: req.body.firma_usuario,
+                        apellido: req.body.apellido,
+                        dni: req.body.dni,
+                        tlf: req.body.tlf 
+                      };
+
+                      dbCon.query('INSERT INTO mindSlot.players SET ?', data, function(err, result) {
+                         // Neat!
+                        console.log(err);
+
+                        //res.send('/userList', {data : 'rows'});
+                        res.redirect('/newUser');
+                        //res.send(200);
+
+                       });
+  }
+
 
 });
 
@@ -141,9 +180,12 @@ app.get('/admin/list', function(req,res){
 });
 // update usuario
 app.post('/admin/update', function(req,res){
+  //console.log(req.body);
     var data  = {
       nombre: req.body.nombre, 
       tiempo: req.body.tiempo,
+      apellido: req.body.apellido,
+      dni: req.body.dni,
       tlf: req.body.telefono,
     };
 
